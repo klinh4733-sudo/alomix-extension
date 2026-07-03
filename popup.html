@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seto Address Search</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"
+                        fill="#E63946" />
+                </svg>
+                <span>Seto Search</span>
+            </div>
+            <div class="header-actions">
+                <button id="openPanelBtn" class="icon-btn" title="Mở cửa sổ Panel">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </button>
+                <button id="settingsBtn" class="icon-btn" title="Cài đặt">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+                        </path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main id="mainView">
+            <div class="input-group">
+                <label for="phoneInput">Số điện thoại</label>
+                <input type="text" id="phoneInput" placeholder="Nhập SĐT khách hàng...">
+            </div>
+
+            <div class="input-group">
+                <label for="addressInput">Địa chỉ</label>
+                <textarea id="addressInput" placeholder="Nhập địa chỉ khách hàng..."></textarea>
+            </div>
+
+            <button id="searchBtn" class="primary-btn">
+                <span class="btn-text">Tìm kiếm</span>
+                <div class="loader" id="loader"></div>
+            </button>
+
+            <div id="resultsArea" class="results-container">
+                <div id="initialState" class="empty-state">
+                    <p>Nhập thông tin để bắt đầu tìm kiếm</p>
+                </div>
+            </div>
+        </main>
+
+        <main id="settingsView" style="display: none;">
+            <div class="settings-header">
+                <h3>Cấu hình</h3>
+                <button id="closeSettingsBtn" class="text-btn">Đóng</button>
+            </div>
+
+            <div class="form-container">
+                <div class="form-group" style="display:none;">
+                    <!-- Hidden as strictly hardcoded now if you want, or kept for debug -->
+                    <label>Lark App ID</label>
+                    <input type="text" id="larkAppId" placeholder="cli_...">
+                </div>
+                <div class="form-group" style="display:none;">
+                    <label>Lark App Secret</label>
+                    <input type="password" id="larkAppSecret">
+                </div>
+
+                <div class="form-group">
+                    <label for="anousithToken">Anousith Token</label>
+                    <textarea id="anousithToken" placeholder="eyJhbGci..."
+                        style="height: 100px; font-family: monospace; font-size: 11px;"></textarea>
+                </div>
+
+
+
+                <button id="saveSettingsBtn" class="primary-btn">Lưu cài đặt</button>
+                <div id="settingsStatus" class="status-msg"></div>
+            </div>
+        </main>
+    </div>
+    <script src="api.js"></script>
+    <script src="popup.js"></script>
+</body>
+
+</html>

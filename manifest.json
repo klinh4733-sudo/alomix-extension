@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "Roy Super App",
+  "version": "2.0",
+  "description": "Unified tool for Address Search (Anousith/Lark) and Email Order Mapping (Pancake POS).",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "declarativeNetRequest",
+    "sidePanel",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://pro.api.anousith.express/*",
+    "https://api.next.anousith.express/*",
+    "https://open.larksuite.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://*.pancake.vn/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "side_panel": {
+    "default_path": "side_panel.html"
+  },
+  "action": {
+    "default_title": "Open Super App",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.pancake.vn/*"
+      ],
+      "js": [
+        "content/content.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "inject/inject.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roy Super App</title>
+    <link rel="stylesheet" href="side_panel.css">
+    <!-- Removed popup.css to avoid conflicts, styles merged into side_panel.css -->
+</head>
+
+<body>
+    <!-- Global Header -->
+    <header id="app-header">
+        <div class="brand">
+            <img src="icons/logo_r_final.png" alt="Roy Logo" class="header-logo">
+            <h1>Roy <span class="accent">Super App</span></h1>
+        </div>
+        <div class="nav-container">
+            <div class="nav-item active" data-target="view-address">Address</div>
+            <div class="nav-item" data-target="view-email">Email</div>
+        </div>
+        <button id="globalSettingsBtn" class="icon-btn" title="Settings">⚙️</button>
+    </header>
+
+    <main id="app-content">
+        <!-- Address Search View -->
+        <div id="view-address" class="view-section active">
+            <div class="content-container">
+                <div class="input-group">
+                    <label>Số điện thoại</label>
+                    <input type="text" id="phoneInput" placeholder="94418609">
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>Địa chỉ</label>
+                        <button id="translateInputBtn" class="link-btn" title="Dịch địa chỉ">Dịch 🔍</button>
+                        <button id="editInputBtn" class="link-btn" style="display:none; color:#666;">✎ Sửa</button>
+                    </div>
+
+                    <!-- Raw Input Mode -->
+                    <textarea id="addressInput" rows="2" placeholder="Nhập địa chỉ khách hàng..."></textarea>
+
+                    <!-- Interactive Mode (Translation Result) -->
+                    <div id="inputInteractiveArea" class="interactive-box" style="display:none; margin-top: 5px;">
+                        <div style="font-size:12px; color:#666; margin-bottom:4px;">Kết quả dịch (Vietnamese):</div>
+                        <div id="inputOriginalVis" class="vis-container" style="display:none;"></div>
+                        <div id="inputTranslatedVis" class="vis-container"></div>
+                    </div>
+                </div>
+                <button class="btn-primary" id="searchBtn">Tìm kiếm</button>
+
+                <div id="addrProgress" class="progress-container">
+                    <div id="addrBar" class="progress-bar"></div>
+                </div>
+                <div id="addrStatus" class="status-text" style="display:none"></div>
+
+                <div id="resultsArea" class="results-area"></div>
+            </div>
+        </div>
+
+        <!-- Email Search View -->
+        <div id="view-email" class="view-section">
+            <div class="content-container">
+                <div class="input-group">
+                    <label>Danh sách Email</label>
+                    <textarea id="emailInput" rows="5" placeholder="Nhập email (mỗi dòng 1 email)..."></textarea>
+                </div>
+                <button id="findBtn" class="btn-primary">Tìm đơn hàng</button>
+
+                <div id="progressContainer" class="progress-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+
+                <div id="emailStatus" class="status-text">Ready</div>
+                <div id="emailResults" class="results-area"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Unified Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cấu hình Hệ thống</h3>
+                <button id="closeSettingsBtn" class="icon-btn">✕</button>
+            </div>
+
+            <div class="modal-body" style="padding:0;">
+                <div class="settings-grid">
+                    <!-- Sidebar -->
+                    <div class="settings-sidebar">
+                        <div class="settings-nav-item" data-tab="tab-lark">
+                            <span class="nav-icon">📊</span> Lark Auth
+                        </div>
+                        <div class="settings-nav-item" data-tab="tab-anousith">
+                            <span class="nav-icon">🚚</span> Anousith
+                        </div>
+                        <div class="settings-nav-item" data-tab="tab-hal">
+                            <span class="nav-icon">📦</span> HAL Logistics
+                        </div>
+
+                    </div>
+
+                    <!-- Content Area -->
+                    <div class="settings-content">
+                        <div id="settingsMsg" class="msg-box" style="margin-bottom:10px; display:none;"></div>
+
+                        <!-- Lark Panel -->
+                        <div id="tab-lark" class="settings-panel">
+                            <h4>Lark Authorization</h4>
+                            <div class="setting-group">
+                                <label>Lark App ID (Shared)</label>
+                                <input type="text" id="larkAppId" placeholder="cli_...">
+                            </div>
+                            <div class="setting-group">
+                                <label>Lark App Secret (Shared)</label>
+                                <input type="password" id="larkAppSecret">
+                            </div>
+                            <div class="setting-group" style="margin-top:20px;">
+                                <button id="saveLarkBtn" class="btn-primary">Lưu cấu hình Lark</button>
+                            </div>
+                        </div>
+
+                        <!-- Anousith Panel -->
+                        <div id="tab-anousith" class="settings-panel">
+                            <h4>Anousith Configuration</h4>
+                            <div class="setting-group">
+                                <label>Anousith Token</label>
+                                <input type="password" id="anousithToken">
+                            </div>
+                            <div class="setting-group" style="margin-top:20px;">
+                                <button id="saveAnousithBtn" class="btn-primary">Lưu Token Anousith</button>
+                            </div>
+                        </div>
+
+                        <!-- HAL Panel -->
+                        <div id="tab-hal" class="settings-panel">
+                            <h4>HAL Configuration</h4>
+                            <div class="setting-group">
+                                <label>HAL Token</label>
+                                <input type="password" id="halToken" placeholder="Nhập Token HAL...">
+                            </div>
+                            <div class="setting-group" style="margin-top:20px;">
+                                <button id="saveHalBtn" class="btn-primary">Lưu Token HAL</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- Footer removed -->
+
+            <!-- Footer removed -->
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="services/lark-service.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

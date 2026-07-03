@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "requestHeaders": [
+                {
+                    "header": "Referer",
+                    "operation": "set",
+                    "value": "https://app.anousith.express/"
+                },
+                {
+                    "header": "Origin",
+                    "operation": "set",
+                    "value": "https://app.anousith.express"
+                },
+                {
+                    "header": "Sec-Fetch-Site",
+                    "operation": "set",
+                    "value": "same-site"
+                }
+            ]
+        },
+        "condition": {
+            "urlFilter": "anousith.express",
+            "resourceTypes": [
+                "xmlhttprequest"
+            ]
+        }
+    }
+]

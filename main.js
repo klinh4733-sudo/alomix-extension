@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const larkAppSecret = document.getElementById('larkAppSecret');
     const anousithTokenInput = document.getElementById('anousithToken');
     const halTokenInput = document.getElementById('halToken');
+    const geminiApiKeyInput = document.getElementById('geminiApiKey');
+    const geminiModelInput = document.getElementById('geminiModel');
 
     const settingsMsg = document.getElementById('settingsMsg');
 
@@ -42,13 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load all settings into currentConfig and update UI
     const loadConfig = async () => {
         currentConfig = await chrome.storage.local.get([
-            'larkAppId', 'larkAppSecret', 'anousithToken', 'halToken'
+            'larkAppId', 'larkAppSecret', 'anousithToken', 'halToken', 'geminiApiKey', 'geminiModel'
         ]);
         // Update UI elements
         larkAppId.value = currentConfig.larkAppId || '';
         larkAppSecret.value = currentConfig.larkAppSecret || '';
         anousithTokenInput.value = currentConfig.anousithToken || '';
         halTokenInput.value = currentConfig.halToken || '';
+        if (geminiApiKeyInput) geminiApiKeyInput.value = currentConfig.geminiApiKey || '';
+        if (geminiModelInput) geminiModelInput.value = currentConfig.geminiModel || '';
     };
 
     // Initial load of config when the script runs
@@ -86,6 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.storage.local.set({ halToken: token }, () => {
             loadConfig();
             showMsg("Đã lưu Token HAL!", "success");
+        });
+    });
+
+    document.getElementById('saveGeminiBtn').addEventListener('click', () => {
+        const apiKey = geminiApiKeyInput.value.trim();
+        const model = geminiModelInput.value.trim();
+        chrome.storage.local.set({ geminiApiKey: apiKey, geminiModel: model }, () => {
+            loadConfig();
+            showMsg("Đã lưu cấu hình Gemini!", "success");
         });
     });
 
@@ -359,11 +372,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     } catch (e) {
                         console.error("Batch translate failed", e);
-                        resultsArea.innerHTML = uniqueAddresses.map(addr => renderResultCard({
+                        const cards = uniqueAddresses.map(addr => renderResultCard({
                             laoLine: `${addr.bName}, ${addr.pName}`,
                             vietLine: `Lỗi dịch`,
                             sources: Array.from(addr.sources)
                         })).join('');
+                        resultsArea.innerHTML = `<div class="msg-box error">${e.message}</div>` + cards;
                     }
 
 

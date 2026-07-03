@@ -30,6 +30,7 @@
   "side_panel": {
     "default_path": "side_panel.html"
   },
+  "options_page": "options.html",
   "action": {
     "default_title": "Open Super App",
     "default_icon": {

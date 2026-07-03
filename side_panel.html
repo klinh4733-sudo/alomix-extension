@@ -99,6 +99,9 @@
                         <div class="settings-nav-item" data-tab="tab-hal">
                             <span class="nav-icon">📦</span> HAL Logistics
                         </div>
+                        <div class="settings-nav-item" data-tab="tab-gemini">
+                            <span class="nav-icon">✨</span> Gemini AI
+                        </div>
 
                     </div>
 
@@ -146,6 +149,21 @@
                             </div>
                         </div>
 
+                        <!-- Gemini Panel -->
+                        <div id="tab-gemini" class="settings-panel">
+                            <h4>Gemini AI Configuration</h4>
+                            <div class="setting-group">
+                                <label>Gemini API Key</label>
+                                <input type="password" id="geminiApiKey" placeholder="Nhập Gemini API key...">
+                            </div>
+                            <div class="setting-group">
+                                <label>Model (tùy chọn)</label>
+                                <input type="text" id="geminiModel" placeholder="gemini-2.5-flash-lite">
+                            </div>
+                            <div class="setting-group" style="margin-top:20px;">
+                                <button id="saveGeminiBtn" class="btn-primary">Lưu cấu hình Gemini</button>
+                            </div>
+                        </div>
 
                     </div>
                 </div>

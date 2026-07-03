@@ -117,25 +117,51 @@ query ItemsV2($where: ItemV2WhereInput, $skip: Int, $noLimit: Boolean, $limit: I
     // --- Gemini ---
     gemini: {
         config: {
-            apiKey: 'AIzaSyC8tyfZQufKeLudL2vilMyPMsnvFbp8Vyw',
+            apiKey: null,
             model: 'gemini-2.5-flash-lite'
         },
 
         async _call(apiKey, model, prompt) {
-            const finalKey = apiKey || this.config.apiKey;
-            const finalModel = model || this.config.model;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${finalModel}:generateContent?key=${finalKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            if (!response.ok) {
-                const err = await response.text();
-                throw new Error(`API Error ${response.status}: ${err}`);
+            // Resolve API key: param -> config -> chrome.storage
+            let finalKey = apiKey || this.config.apiKey || null;
+            let finalModel = model || this.config.model || 'gemini-2.5-flash-lite';
+
+            if ((!finalKey || !finalModel) && typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+                try {
+                    const items = await new Promise(res => chrome.storage.local.get(['geminiApiKey', 'geminiModel'], res));
+                    finalKey = finalKey || items.geminiApiKey || null;
+                    finalModel = finalModel || items.geminiModel || finalModel;
+                } catch (e) { /* ignore storage errors */ }
             }
-            const data = await response.json();
-            return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+            if (!finalKey) throw new Error('No Gemini API key configured. Set it in extension options.');
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${finalModel}:generateContent?key=${finalKey}`;
+            const MAX_RETRIES = 3;
+
+            for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                if (!response.ok) {
+                    const err = await response.text();
+                    if (response.status === 403 && /dunning/i.test(err)) {
+                        throw new Error(
+                            `Gemini API key bị Google từ chối do vấn đề thanh toán (billing) trên project Google Cloud gắn với key này (lỗi "Lightning dunning decision is deny"). ` +
+                            `Đây không phải lỗi của extension - cần vào https://console.cloud.google.com/billing kiểm tra/khôi phục billing cho project đó, hoặc tạo API key Gemini mới từ một project khác đang hoạt động bình thường, rồi cập nhật lại trong phần Cài đặt của extension.`
+                        );
+                    }
+                    if (response.status === 503 && attempt < MAX_RETRIES) {
+                        await new Promise(res => setTimeout(res, attempt * 1000));
+                        continue;
+                    }
+                    throw new Error(`API Error ${response.status}: ${err}`);
+                }
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            }
         },
 
         async testConnection(apiKey, model) {
@@ -243,7 +269,7 @@ query ItemsV2($where: ItemV2WhereInput, $skip: Int, $noLimit: Boolean, $limit: I
                 return JSON.parse(jsonStr);
             } catch (e) {
                 console.error("Mapping failed", e);
-                return [{ o: text, t: "Error" }];
+                throw e;
             }
         },
 
